@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:american-flights-api="http://www.mulesoft.org/schema/mule/american-flights-api" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/american-flights-api http://www.mulesoft.org/schema/mule/american-flights-api/current/mule-american-flights-api.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cc3c8ca7-d19b-4eac-90c4-95428a32ac6e" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<american-flights-api:config name="American_Flights_API_Config" doc:name="American Flights API Config" doc:id="bc582e8f-a7e6-4a18-bf4b-5573c89a74d8" property_host="training4-american-api.cloudhub.io" property_port="80" property_protocol="HTTP" />
+	<flow name="helloworldFlow" doc:id="31558612-bf70-4626-96b7-951443bfe33e" >
+		<http:listener doc:name="Listener" doc:id="d785c310-4b1f-4915-9e34-95f2485077f8" config-ref="HTTP_Listener_config" path="/helloWorld">
+		</http:listener>
+		<american-flights-api:get-flights doc:name="Get flights" doc:id="4723e241-cac0-410a-8ffd-9c29a2606feb" config-ref="American_Flights_API_Config" client-id="d1374b15c6864c3682ddbed2a247a826" client-secret="4a87fe7e2e43488c927372AEF981F066" destination="LAX" request-streaming-mode="AUTO"/>
+		<ee:transform doc:name="Transform Message" doc:id="c95d3238-23d7-4b08-b4e9-6b8ad25d3bd0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
